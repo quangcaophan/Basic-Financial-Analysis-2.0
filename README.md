@@ -20,13 +20,16 @@ In addition, the project will provide concepts about financial indicators and ho
 Balance Sheet section
   - Dataset
   - WB Rule of Thumb indicator
+
 Income Statement section 
   - Dataset
   - Horizontal - vertical analysis
   - WB Rule of Thumb indicator
+
 Cash Flow Statement section
   - Dataset
   - WB Rule of Thumb indicator
+
 Ratio section
   - Liquidity ratio
   - Solvency ratio
