@@ -1,10 +1,8 @@
 import pandas as pd
 import streamlit as st
-from income_statement import get_income_statement
-from balance_sheet import get_balance_sheet
 
 
-def calculate_ratios(symbol: str) -> pd.DataFrame:
+def calculate_ratios(income_statement: pd.DataFrame, balance_sheet: pd.DataFrame) -> pd.DataFrame:
     """
     Calculate the financial ratios for the given balance sheet data.
     Args:
@@ -13,8 +11,8 @@ def calculate_ratios(symbol: str) -> pd.DataFrame:
         pd.DataFrame: A DataFrame with financial ratios.
     """    
     # Get the data
-    balance_sheet           = get_balance_sheet(symbol).transpose()
-    income_statement        = get_income_statement(symbol).transpose()
+    balance_sheet           = balance_sheet.transpose()
+    income_statement        = income_statement.transpose()
     
     # Extract the necessary data
     total_asset             = balance_sheet['TỔNG CỘNG TÀI SẢN (Tỷ đồng)']

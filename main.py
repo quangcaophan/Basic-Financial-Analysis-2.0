@@ -14,16 +14,18 @@ with st.sidebar:
 
 #get the data
 balance_sheet           = get_balance_sheet(symbol,left_to_right=False) 
+balance_sheet_left      = get_balance_sheet(symbol) 
+
 income_statement        = get_income_statement(symbol)
 cash_flow               = cash_flow_statement(symbol)
-ratio                   = calculate_ratios(symbol)
+ratio                   = calculate_ratios(income_statement, balance_sheet_left)
 
 horizontal_analysis_df  = horizontal_analysis(income_statement)
 vertical_analysis_df    = vertical_analysis(income_statement) 
 
 
 if page == "Balance Sheet":
-    display_balance_sheet(balance_sheet,symbol)
+    display_balance_sheet(balance_sheet_left,symbol)
 
 elif page == "Income Statement":
     display_income_statement(income_statement, horizontal_analysis_df, vertical_analysis_df,symbol)

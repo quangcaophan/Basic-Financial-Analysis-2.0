@@ -2,6 +2,7 @@ import pandas as pd
 from vnstock import Vnstock
 import streamlit as st
 
+@st.cache_data
 def get_balance_sheet(symbol: str, year: int = 5,left_to_right: bool = True) -> pd.DataFrame:
     """
     Get the balance sheet for the given symbol.
@@ -22,6 +23,7 @@ def get_balance_sheet(symbol: str, year: int = 5,left_to_right: bool = True) -> 
     
     return balance_sheet
 
+@st.cache_data
 def display_balance_sheet(balance_sheet: pd.DataFrame, symbol) -> None:
     """ 
     Display the balance sheet for the given symbol.

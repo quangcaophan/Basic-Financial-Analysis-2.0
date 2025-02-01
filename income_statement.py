@@ -3,6 +3,7 @@ from vnstock import Vnstock
 import streamlit as st
 import altair as alt
 
+@st.cache_data
 def get_income_statement(symbol: str, year: int = 5, left_to_right: bool = True) -> pd.DataFrame:
     """
     Get the income statement for the given symbol.
@@ -23,7 +24,7 @@ def get_income_statement(symbol: str, year: int = 5, left_to_right: bool = True)
 
     return income_statement
 
-
+@st.cache_data
 def horizontal_analysis(income_statement: pd.DataFrame) -> pd.DataFrame:
     """
     Calculate the horizontal analysis for the given income statement data.
@@ -49,6 +50,7 @@ def horizontal_analysis(income_statement: pd.DataFrame) -> pd.DataFrame:
     
     return result_df
 
+@st.cache_data
 def vertical_analysis(income_statement: pd.DataFrame) -> pd.DataFrame:
     """
     Calculate the vertical analysis for the given income statement data.
@@ -74,7 +76,7 @@ def vertical_analysis(income_statement: pd.DataFrame) -> pd.DataFrame:
     
     return result_df
 
-
+@st.cache_data
 def display_income_statement(
         income_statements: list,  # Đổi tên biến để rõ ràng hơn
         horizontal_analysis_df: pd.DataFrame, 
@@ -136,6 +138,7 @@ def display_income_statement(
 
         st.write("### EPS Margin:")
         st.write('Not available yet')
+
 
 def plot_trend_line(income_statement, label):
     income_statement = income_statement.transpose()

@@ -2,6 +2,7 @@ import pandas as pd
 from vnstock import Vnstock
 import streamlit as st
 
+@st.cache_data
 def cash_flow_statement(symbol: str, year: int = 5, left_to_right: bool = True) -> pd.DataFrame:
     """
     Get the cash flow statement for the given symbol.
@@ -22,6 +23,7 @@ def cash_flow_statement(symbol: str, year: int = 5, left_to_right: bool = True) 
     
     return cashflow_statement
 
+@st.cache_data
 def display_cash_flow_statement(cashflow_statement: pd.DataFrame, symbol: str) -> None:
     """
     Display the cash flow statement for the given symbol.
