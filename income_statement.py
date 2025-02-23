@@ -1,10 +1,13 @@
 import pandas as pd
-from vnstock import Vnstock
 import streamlit as st
 import altair as alt
 
+
+def fetch_income_statement(stock, year: int = 5):
+    return stock.finance.income_statement(period='year', lang='vi', dropna=True).head(year)
+
 @st.cache_data
-def get_income_statement(symbol: str, year: int = 5, left_to_right: bool = True) -> pd.DataFrame:
+def get_income_statement(income_statement: pd.DataFrame, left_to_right: bool = True) -> pd.DataFrame:
     """
     Get the income statement for the given symbol.
     Args:
@@ -14,8 +17,6 @@ def get_income_statement(symbol: str, year: int = 5, left_to_right: bool = True)
     Returns:
         pd.DataFrame: The income statement for the given symbol.
     """
-    stock = Vnstock().stock(symbol=symbol, source='VCI')
-    income_statement = stock.finance.income_statement(period='year', lang='vi', dropna=True).head(year)
     if left_to_right == True:
         income_statement = income_statement.sort_values(by='Năm', ascending=True)
     income_statement = income_statement.transpose()
@@ -24,7 +25,6 @@ def get_income_statement(symbol: str, year: int = 5, left_to_right: bool = True)
 
     return income_statement
 
-@st.cache_data
 def horizontal_analysis(income_statement: pd.DataFrame) -> pd.DataFrame:
     """
     Calculate the horizontal analysis for the given income statement data.
@@ -50,7 +50,6 @@ def horizontal_analysis(income_statement: pd.DataFrame) -> pd.DataFrame:
     
     return result_df
 
-@st.cache_data
 def vertical_analysis(income_statement: pd.DataFrame) -> pd.DataFrame:
     """
     Calculate the vertical analysis for the given income statement data.
@@ -76,7 +75,6 @@ def vertical_analysis(income_statement: pd.DataFrame) -> pd.DataFrame:
     
     return result_df
 
-@st.cache_data
 def display_income_statement(
         income_statements: list,  # Đổi tên biến để rõ ràng hơn
         horizontal_analysis_df: pd.DataFrame, 
@@ -95,10 +93,8 @@ def display_income_statement(
     Returns:
         None
     """
-    st.write(f"Here's some information about the Income Statement for: {symbols}")
     st.write(income_statements)
-
-    with st.expander(f"Horizontal - Vertical Analysis for {symbols}"):
+    with st.expander(f"Horizontal - Vertical Analysis"):
         col1, col2 = st.columns(2)
         with col1:
             # Horizontal Analysis

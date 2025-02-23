@@ -1,9 +1,11 @@
 import pandas as pd
-from vnstock import Vnstock
 import streamlit as st
 
+def fetch_cash_flow(stock, year: int = 5):
+    return stock.finance.cash_flow(period='year', lang='vi', dropna=True).head(year)
+
 @st.cache_data
-def cash_flow_statement(symbol: str, year: int = 5, left_to_right: bool = True) -> pd.DataFrame:
+def cash_flow_statement(cashflow_statement: pd.DataFrame, left_to_right: bool = True) -> pd.DataFrame:
     """
     Get the cash flow statement for the given symbol.
     Args:
@@ -13,8 +15,6 @@ def cash_flow_statement(symbol: str, year: int = 5, left_to_right: bool = True) 
     Returns:
         pd.DataFrame: The cash flow statement for the given symbol.
     """
-    stock = Vnstock().stock(symbol=symbol, source='VCI')
-    cashflow_statement = stock.finance.cash_flow(period='year', lang='vi', dropna=True).head(year)
     if left_to_right == True:
         cashflow_statement = cashflow_statement.sort_values(by='Năm', ascending=True)
     cashflow_statement = cashflow_statement.transpose()
@@ -23,7 +23,6 @@ def cash_flow_statement(symbol: str, year: int = 5, left_to_right: bool = True) 
     
     return cashflow_statement
 
-@st.cache_data
 def display_cash_flow_statement(cashflow_statement: pd.DataFrame, symbol: str) -> None:
     """
     Display the cash flow statement for the given symbol.
@@ -33,7 +32,6 @@ def display_cash_flow_statement(cashflow_statement: pd.DataFrame, symbol: str) -
     Returns:
         None
     """
-    st.write(f"## Here's some information about the Cash Flow Statement: {symbol}")
     st.write(cashflow_statement)
     with st.expander("WB Rule of Thumb for Cash Flow Statement"):
         st.write("### Capex Margin:")

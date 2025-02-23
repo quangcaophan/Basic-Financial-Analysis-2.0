@@ -1,29 +1,19 @@
 import pandas as pd
-from vnstock import Vnstock
 import streamlit as st
 
-@st.cache_data
-def get_balance_sheet(symbol: str, year: int = 5,left_to_right: bool = True) -> pd.DataFrame:
-    """
-    Get the balance sheet for the given symbol.
-    Args:
-        symbol (str): The stock symbol.
-        year (int, optional): The number of years to include in the balance sheet. Defaults to 5.
-        left_to_right (bool, optional): Whether to sort the balance sheet by year. Defaults to True.
-    Returns:
-        pd.DataFrame: The balance sheet DataFrame.
-    """
-    stock = Vnstock().stock(symbol=symbol, source='VCI')
-    balance_sheet = stock.finance.balance_sheet(period='year', lang='vi', dropna=True).head(year)
-    if left_to_right == True:
-        balance_sheet = balance_sheet.sort_values(by='Năm', ascending=True)
-    balance_sheet = balance_sheet.transpose()
-    balance_sheet.columns = balance_sheet.iloc[1]  # Set the first row as header
-    balance_sheet = balance_sheet.drop(balance_sheet.index[[0, 1]])
-    
-    return balance_sheet
+def fetch_balance_sheet(stock, year: int = 5):
+    return stock.finance.balance_sheet(period='year', lang='vi', dropna=True).head(year)
 
 @st.cache_data
+def get_balance_sheet(balance_sheet: pd.DataFrame, left_to_right: bool = True) -> pd.DataFrame:
+    if left_to_right:
+        balance_sheet = balance_sheet.sort_values(by='Năm', ascending=True)
+    balance_sheet = balance_sheet.transpose()
+    balance_sheet.columns = balance_sheet.iloc[1]  
+    balance_sheet = balance_sheet.drop(balance_sheet.index[[0, 1]])
+    return balance_sheet
+
+
 def display_balance_sheet(balance_sheet: pd.DataFrame, symbol) -> None:
     """ 
     Display the balance sheet for the given symbol.
@@ -31,7 +21,6 @@ def display_balance_sheet(balance_sheet: pd.DataFrame, symbol) -> None:
         balance_sheet (pd.DataFrame): The balance sheet DataFrame.
         symbol (str): The stock symbol.
     """
-    st.write(f"Here's some information about the Balance Sheet: {symbol}")
     st.write(balance_sheet)
     
     balance_sheet = balance_sheet.transpose().head(1)
