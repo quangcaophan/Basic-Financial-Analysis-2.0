@@ -33,6 +33,4 @@ def display_cash_flow_statement(cashflow_statement: pd.DataFrame, symbol: str) -
         None
     """
     st.write(cashflow_statement)
-    with st.expander("WB Rule of Thumb for Cash Flow Statement"):
-        st.write("### Capex Margin:")
-        st.write('Not available yet')
+    

@@ -6,6 +6,8 @@ from Invest_over_a_period import *
 from vnstock import Vnstock
 import streamlit as st
 from datetime import *
+
+
 # sidebar 
 with st.sidebar:
     st.set_page_config(page_title="Stock Dashboard", layout="wide")
@@ -39,6 +41,18 @@ elif page == "Income Statement":
 elif page == "Cash Flow Statement":
     st.write(f"Here's some information about the Cash Flow Statement: {symbol}")
     display_cash_flow_statement(cash_flow,stock)
+    with st.expander("WB Rule of Thumb for Cash Flow Statement"):
+        revenue = income_statement.transpose()
+        revenue = revenue['Doanh thu thuần'].iloc[-1] 
+        capex = cash_flow.transpose()
+        capex = capex['Mua sắm TSCĐ'].iloc[-1]
+        capex_margin = round((abs(capex)/ revenue)*100)
+        
+        st.write("### Capex Margin:")
+        if capex_margin < 25:
+            st.success('Capex Margin is less than 25%')
+        else:
+            st.warning('Capex Margin is higher than 25%')
 
 elif page == "DCA Calculator":
     st.write(f"If you invest to {symbol} for a period of time, how much PnL you gonna make?")
@@ -55,10 +69,33 @@ elif page == "DCA Calculator":
     start_date_str = start_date.strftime('%Y-%m-%d')
     end_date_str = end_date.strftime('%Y-%m-%d')
 
-    history_price           = get_data(fetch_stock_history(stock,start_date=start_date_str,end_date=end_date_str),date_type=date_type)
+    history_price = calculate_dca(get_data(fetch_stock_history(stock,start_date=start_date_str,end_date=end_date_str),date_type=date_type),investment=daily_investment)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        total_cost = history_price['Total Cost'].iloc[-1]
+        st.metric(
+            label = 'Total Invested', 
+            value = f"{total_cost:,.0f} VND")
+    with col2:
+        current_value = history_price['Current Value'].iloc[-1]
+        pnl = history_price['PnL'].iloc[-1]
+        st.metric(
+            label = 'Total Value', 
+            value = f"{current_value:,.0f} VND", 
+            delta = f"{pnl:,.0f} VND", 
+            delta_color = "normal")
+    with col3:
+        percent_change = round((history_price['PnL'].iloc[-1] / history_price['Total Cost'].iloc[-1]) * 100, 2)
+        st.metric(
+            label='Percent Change', 
+            value=f"{percent_change}%",
+            delta=f"{percent_change}%"
+        )
 
-    st.write(plot_pnl_chart(calculate_dca(history_price,daily_investment)))
+    st.write(F"Buying {daily_investment:,.0f} of {symbol} every week for {history_price["time"].count()} {date_type} would have turned {total_cost:,.0f} into {current_value:,.0f} ({percent_change}%)")
 
+
+    st.write(plot_pnl_chart(history_price))
 
 elif page == "Ratio":
     display_ratio(ratio,stock)
