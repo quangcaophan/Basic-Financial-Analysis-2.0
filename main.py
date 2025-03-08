@@ -5,17 +5,17 @@ from cash_flow import *
 from Invest_over_a_period import *
 from vnstock import Vnstock
 import streamlit as st
-from datetime import datetime
-
+from datetime import *
 # sidebar 
 with st.sidebar:
     st.set_page_config(page_title="Stock Dashboard", layout="wide")
     st.title("Navigation")
     symbol = st.text_input('Enter your stock code here:', 'nvl').upper()
-    page = st.sidebar.radio("Go to", ["Balance Sheet", "Income Statement","Cash Flow Statement","Ratio","Invest Zone",'About'])
+    page = st.sidebar.radio("Go to", ["Balance Sheet", "Income Statement","Cash Flow Statement","Ratio","DCA Calculator",'About'])
 
 # Fetch stock data once
 stock = Vnstock().stock(symbol=symbol, source='VCI')
+
 
 #get the data
 balance_sheet           = get_balance_sheet(fetch_balance_sheet(stock), left_to_right=False) 
@@ -27,7 +27,6 @@ ratio                   = calculate_ratios(income_statement, balance_sheet_left)
 
 horizontal_analysis_df  = horizontal_analysis(income_statement)
 vertical_analysis_df    = vertical_analysis(income_statement) 
-
 
 if page == "Balance Sheet":
     st.write(f"Here's some information about the Balance Sheet: {symbol}")
@@ -41,31 +40,25 @@ elif page == "Cash Flow Statement":
     st.write(f"Here's some information about the Cash Flow Statement: {symbol}")
     display_cash_flow_statement(cash_flow,stock)
 
-elif page == "Invest Zone":
-    st.write('Not available yet')
+elif page == "DCA Calculator":
+    st.write(f"If you invest to {symbol} for a period of time, how much PnL you gonna make?")
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        start_date          = st.date_input("Start Date", datetime(2024, 1, 1))
+    with col2:
+        end_date            = st.date_input("End Date"  , datetime(2024, 12, 31), max_value=date.today())
+    with col3:
+        daily_investment    = st.number_input("Daily Investment (VND)", min_value=0, value=1000000)
+    with col4:
+        date_type           = st.selectbox('Repeat Purchase',('Day','Month','Year'))
 
-#     st.write(f"If you invest to {symbol} for a period of time, how much PnL you gonna make?")
-#     col1, col2, col3 = st.columns(3)
-#     with col1:
-#         start_date = st.date_input("Start Date", datetime(2024, 1, 1))
-#     with col2:
-#         end_date = st.date_input("End Date", datetime(2024, 12, 31))
-#     with col3:
-#         daily_investment = st.number_input("Daily Investment (VND)", min_value=0, value=1000000)
+    start_date_str = start_date.strftime('%Y-%m-%d')
+    end_date_str = end_date.strftime('%Y-%m-%d')
 
-#     start_date_str = start_date.strftime('%Y-%m-%d')
-#     end_date_str = end_date.strftime('%Y-%m-%d')
+    history_price           = get_data(fetch_stock_history(stock,start_date=start_date_str,end_date=end_date_str),date_type=date_type)
 
-#     invest = calculate_daily_investment_pnl(fetch_stock_history(stock, start_date_str, end_date_str), daily_investment=daily_investment)
+    st.write(plot_pnl_chart(calculate_dca(history_price,daily_investment)))
 
-#     st.write(f'Number of day: {end_date - start_date}')
-#     st.write(invest)    
-
-#     st.altair_chart(plot_pnl(invest), use_container_width=True)
-
-
-
-    
 
 elif page == "Ratio":
     display_ratio(ratio,stock)

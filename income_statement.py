@@ -135,13 +135,12 @@ def display_income_statement(
         st.write("### EPS Margin:")
         st.write('Not available yet')
 
-
 def plot_trend_line(income_statement, label):
     income_statement = income_statement.transpose()
     income_statement = income_statement[['Doanh thu thuần', 'Lãi gộp', 'Lợi nhuận thuần']]
     selected_columns = [0, 1, 2]  # Adjusted selected columns
     
-    st.subheader(f"Trend Line for {label}")
+    st.subheader(f"Trend Line")
     
     cols = st.columns(3)
     
