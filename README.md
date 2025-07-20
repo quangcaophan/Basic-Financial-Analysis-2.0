@@ -7,28 +7,23 @@ Here is the webapp: https://basic-ratio-analysis.streamlit.app/
 
 
 ## Overview
-This project covers basic financial analysis using Python and various data analysis libraries. For this project, I will use NVL real estate companies to make a dashboard.
+This repo covers basic financial analysis using Python and various data analysis libraries. For this project, I will use NVL real estate companies to make a dashboard.
 
 ## Purpose
 The goal is to use basic financial indicators to see how businesses are performing year over year and make investment decisions.
 
 In addition, the project will provide concepts about financial indicators and how to use these indicators.
 
-!!! This project is used for educational purposes. Any loss of money will be your responsibility.
-
 ## Table of contents
 Balance Sheet section
   - Dataset
-  - WB Rule of Thumb indicator
 
 Income Statement section 
   - Dataset
   - Horizontal - vertical analysis
-  - WB Rule of Thumb indicator
 
 Cash Flow Statement section
   - Dataset
-  - WB Rule of Thumb indicator
 
 Ratio section
   - Liquidity ratio
